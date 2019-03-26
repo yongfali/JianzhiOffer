@@ -3,6 +3,7 @@
 #include<stack>
 #include<algorithm>
 #include<math.h>
+#include<queue>
 using namespace std;
 
 struct ListNode{
@@ -263,6 +264,19 @@ vector<int> reverseArr(vector<int> arr){
  } 
  
  //树的子结构判断
+  bool DoseTree1HaveTree2(TreeNode* root1, TreeNode* root2) {
+ 	if(root1 == NULL){
+	 	return false;
+	 }
+	 if(root2 == NULL){
+ 		return true;
+ 	}
+ 	if(root1->val != root2->val){
+	 	return false;
+ 	}
+ 	return DoseTree1HaveTree2(root1->left, root2->left) && DoseTree1HaveTree2(root1->right, root2->right);
+ }
+ 
  bool IsSubTree(TreeNode* root1, TreeNode* root2){
  	bool result = false;
  	if(root1 == NULL || root2 == NULL){
@@ -280,26 +294,14 @@ vector<int> reverseArr(vector<int> arr){
  	}
  	return result;
  }
- bool DoseTree1HaveTree2(TreeNode* root1, TreeNode* root2) {
- 	if(root1 == NULL){
-	 	return false;
-	 }
-	 if(root2 == NULL){
- 		return true;
- 	}
- 	if(root1->val != root2->val){
-	 	return false;
- 	}
- 	return DoseTree1HaveTree2(root1->left, root2->left) && DoseTree1HaveTree2(root1->right, root2->right);
- }
  
  //二叉树镜像，递归交换左右子树的节点就行
  void Mirro(TreeNode* pNode){
  	if(pNode == NULL){
-	 	return NULL;
+	 	return;
 	 }
 	 if(pNode->left == NULL && pNode->right == NULL){
- 		return pNode;
+ 		return;
  	}
  	TreeNode *temp = pNode->left;
  	pNode->left = pNode->right;
@@ -311,21 +313,174 @@ vector<int> reverseArr(vector<int> arr){
 	 	Mirro(pNode->right);
 	 }
  } 
+ 
+ //顺时针打印矩阵
+vector<int> printMatrix(vector<vector<int> > matrix) {
+	vector<int> res;
+	if(matrix.empty()){
+		return res;
+	}
+	 int rows = matrix.size();
+	 int cols = matrix[0].size();
+	 //定义四个角标变量，因为打印一共分为四步，分别为从左到右
+	 //从上到下，从右到左，从下到上。
+	 int left = 0;
+	 int right = cols - 1;
+	 int top = 0;
+	 int bottom = rows - 1;
+        while(left <= right && top <= bottom){
+            //从左到右打印，这一步肯定有
+            for(int i = left; i <=right; i++){
+                res.push_back(matrix[top][i]);
+            }
+            //从上到下打印
+            if(top < bottom){
+                for(int j = top+1; j <= bottom; j++){
+                    res.push_back(matrix[j][right]);
+                }
+            }
+            //从右到左打印
+            if(top < bottom && left < right){
+                for(int k = right -1; k >= left; k--){
+                    res.push_back(matrix[bottom][k]);
+                }
+            }
+            //从下往上打印
+            if(top+1 < bottom && left < right){
+                for(int h = bottom - 1; h >= top+1; h--){
+                    res.push_back(matrix[h][left]);
+                }
+            }
+            left++;
+            right--;
+            top++;
+            bottom--;
+        }
+        return res;
+ } 
+ 
+ //栈的压入和弹出,即判断一个序列是否为出栈的顺序
+ bool IsPopOrder(vector<int> pushS, vector<int> popS){
+ 	stack<int> temp;
+ 	int id = 0; //用于统计原序列是否已经全部入栈 
+ 	for(int i = 0; i < popS.size(); ++i){
+	 	while(temp.empty() || temp.top() != popS[i]){
+	 		temp.push(pushS[id++]);
+	 		//当原序列全部入栈后还没有找到与当前值相等的则说明不是出栈顺序 
+	 		if(id > pushS.size()){
+		 		return false;
+		 	}
+	 	}
+	 	temp.pop();
+	 }
+	 if(temp.empty()){
+ 		return true;
+ 	}
+ 	else{
+	 	return false;
+	 }
+ } 
+
+// 从上往下打印二叉树，同层从左到右
+vector<int> PrintBST(TreeNode* root){
+	vector<int> res;
+	if(root == NULL){
+		return res;
+	}
+	queue<TreeNode*> temp;
+	temp.push(root);
+	while(!temp.empty()){
+		TreeNode *tempNode = temp.front();
+		res.push_back(tempNode->val);
+		if(tempNode->left != NULL){
+			temp.push(tempNode->left);
+		}
+		if(tempNode->right != NULL){
+			temp.push(tempNode->right);
+		}
+		temp.pop();  
+	}
+	return res;
+} 
+
+//判断一个数组是否为某一个二叉搜索树的后序遍历
+//后序遍历根节点为最后一个，并且比根节点大的为左子树，反之为右子树
+//递归直到左右都遍历完
+bool ArrayIsHouXu(vector<int> arr){
+	int len = arr.size();
+	if(len <=0 ){
+		return false;
+	}
+	int root = arr[len-1];//最后一个为树的根节点
+	vector<int> leftNode;
+	vector<int> rightNode;
+	int i = 0;
+	for(; i < len - 1; i++){
+		if(arr[i] < root){
+			leftNode.push_back(arr[i]);
+		}
+		break; //不再出现小的后说明左子节点全部遍历完 
+	}
+	int j = i;
+	for(; j < len -1; ++j){
+		if(arr[j] > root){
+			rightNode.push_back(arr[j]);
+		}
+		return false; //当大的后面突然出现一个小的则不符合后序遍历 
+	}
+	bool left = false;
+	if(i > 0){
+		left = ArrayIsHouXu(leftNode);
+	}
+	bool right = false;
+	if(i < len - 1){
+		right = ArrayIsHouXu(rightNode);
+	} 
+	return left && right;
+	 
+}
+
+// 查找二叉树中和为某一值的所有路径，可以递归每次查找的值为目标值减去当前的根节点值
+// 这样就可以不用回溯了，相当于递归更新目标和，直到为0或树为空
+vector<vector<int> > allSequence;
+vector<int> temp;
+vector<vector<int> > FindAllPath(TreeNode* root, int target){
+	if(root == NULL){
+		return allSequence;
+	}
+	temp.push_back(root->val);
+	if(target - root->val == 0 && root->left == NULL && root->right == NULL){
+		allSequence.push_back(temp);
+	}
+	//左右子树不为空并且还没有达到目标值则调整目标值递归进行查找 
+	FindAllPath(root->left, target - root->val);
+	FindAllPath(root->right, target - root->val);
+	if(!temp.empty()){
+		temp.pop_back(); 
+	} 
+	return allSequence;
+}
+
+// 复杂链表的复制
+ 
 int main(){
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
-	int n;
-	vector<int> vec;
-	while(cin >> n){
-		int temp;
-		for(int i = 0; i< n; i++){
-			cin >> temp;
-			vec.push_back(temp);
-		}
-		vector<int> result = reverseArr(vec);
-		vector<int>::iterator it = result.begin();
-		for(; it != result.end(); it++){
-			cout << *it <<endl;
-		}
-	}
+	//int n;
+	//vector<int> vec;
+	//while(cin >> n){
+	//	int temp;
+	//	for(int i = 0; i< n; i++){
+	//		cin >> temp;
+	//		vec.push_back(temp);
+	//	}
+	//	vector<int> result = reverseArr(vec);
+	//	vector<int>::iterator it = result.begin();
+	//	for(; it != result.end(); it++){
+	//		cout << *it <<endl;
+	//	}
+//	}
+	vector<int> vec1 = {1,2,3,4,5};
+	vector<int> vec2 = {4,5,3,2,1};
+	cout << IsPopOrder(vec1, vec2) << endl;
 	return 0;
 }
