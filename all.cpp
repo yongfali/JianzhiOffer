@@ -19,6 +19,12 @@ struct TreeNode{
 	TreeNode(int x):val(x), left(NULL), right(NULL){}
 };
 
+struct RandomListNode{
+	int val;
+	RandomListNode *next, *random;
+	RandomListNode(int x):val(x), next(NULL), random(NULL){}
+}; 
+
 //字符串空格替换 
 void replaceSpace(char* str,int length){
 	if(str == NULL || length <= 0){
@@ -461,8 +467,58 @@ vector<vector<int> > FindAllPath(TreeNode* root, int target){
 	return allSequence;
 }
 
-// 复杂链表的复制
+// 复杂链表的复制分三步进行，首先复制节点，然后调整random指针，最后按奇数偶数打印
+//1：复制节点值
+void copyListNode(RandomListNode* head){
+	if(head == NULL){
+		return;
+	}
+	RandomListNode *pNode = head;
+	while(pNode != NULL){
+		RandomListNode *tempNode = new RandomListNode(pNode->val);
+		tempNode->next = pNode->next;
+		pNode->next= tempNode;
+		pNode = tempNode->next;
+	}
+}
+//2：完成Random节点链接
+void linkRandomList(RandomListNode* head){
+	if(head == NULL){
+		return;
+	}
+	RandomListNode *pNode = head;
+	while(pNode != NULL){
+		if(pNode->random){
+			pNode->next->random = pNode->random->next;
+		}
+		pNode = pNode->next->next;
+	} 
+}
+//3.拆分
+RandomListNode *ChaiFen(RandomListNode* head){
+	if(head == NULL){
+		return;
+	}
+	RandomListNode *pNode = head;
+	RandomListNode *result = head->next;
+	while (pNode != NULL){
+		RandomListNode *pClone = pNode->next;
+	 	pNode->next = pClone->next;
+	 	pNode = pNode->next;
+	 	if (pNode != NULL)
+	 		pClone->next = pNode->next;
+	}
+ 	return result;
+}
+
+RandomListNode* Clone(RandomListNode* pHead){
+	if (!pHead) return NULL;
+	nodeClone(pHead);
+	connectRandom(pHead);
+	return reconnect(pHead);
+ }
  
+
 int main(){
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
 	//int n;
