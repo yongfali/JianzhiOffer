@@ -98,15 +98,93 @@ void quickSort(int a[], int low, int high){
 } 
 
 //堆排序
-void headSort(int[] arr){
-	
+/**
+算法思想(以大顶堆为例，实际存储还是以一维数组)：
+1.将长度为n的待排序的数组进行堆有序化构造成一个大顶堆
+ 
+2.将根节点与尾节点交换并输出此时的尾节点
+ 
+3.将剩余的n -1个节点重新进行堆有序化
+ 
+4.重复步骤2，步骤3直至构造成一个有序序列
+**/
+void headAdjust(int arr[], int start, int end){
+	int parentNode = start;
+	int childNode = parentNode * 2 + 1;
+	while(childNode <= end){
+		//判断左右子节点大小 
+		if(childNode + 1 <= end && arr[childNode] < arr[childNode + 1]){
+			childNode++;
+		}
+		if(arr[parentNode] > arr[childNode]){
+			return;
+		}
+		else{
+			swap(arr[parentNode], arr[childNode]);
+			parentNode = childNode;
+			childNode = parentNode * 2 + 1;
+		}
+	}
+}
+ 
+void headSort(int arr[], int len){
+	//因为只有（n/2-1)之前的节点才开始有子节点。
+	//对于大顶堆a[i]>=a[2*i+1] &&  a[i]>=a[2*i+2], i(0,n/2-1)
+	for(int i = len/2 - 1; i >=0; --i){
+		headAdjust(arr,i,len-1);
+	}
+	for(int i = len -1; i > 0; --i){
+		swap(arr[0], arr[i]);
+		headAdjust(arr,0,i-1);
+	} 
 }
 //归并排序
- 
+//merge主要是对两个有序数组进行合并 
+void merge(int a[], int start, int mid, int end)
+{
+    int *tmp = (int *)malloc((end-start+1)*sizeof(int));
+    int i = start;            
+    int j = mid + 1;        
+    int k = 0;                
+
+    while(i <= mid && j <= end)
+    {
+        if (a[i] <= a[j])
+            tmp[k++] = a[i++];
+        else
+            tmp[k++] = a[j++];
+    }
+
+    while(i <= mid)
+        tmp[k++] = a[i++];
+
+    while(j <= end)
+        tmp[k++] = a[j++];
+
+    for (i = 0; i < k; i++)
+        a[start + i] = tmp[i];
+
+    free(tmp);
+}
+
+void mergeSort(int a[], int start, int end)
+{
+    if(a==NULL || start >= end)
+        return ;
+
+    int mid = (end + start)/2;
+    mergeSort(a, start, mid);
+    mergeSort(a, mid+1, end);
+
+    merge(a, start, mid, end);
+}
 int main(){
 	vector<int> arr;
 	int arrs[] = {7,3,8,9,4,2,6};
-	for(int i = 0; i < 7; ++i){
+	int len = sizeof(arrs) / sizeof(arrs[0]);
+	//cout << len <<endl;
+	//int temp[len];
+	for(int i = 0; i < len; ++i){
 		arr.push_back(arrs[i]);
 	}
 
@@ -116,13 +194,19 @@ int main(){
  	//使用选择排序
 	//selectSort(arr); 
 	//选择排序 
-	//Print(arr,7); 
+	//Print(arr,len); 
 	//插入排序 
 	//insertSort(arr);
-	quickSort(arrs,0,6);
-	for(int i = 0; i < sizeof(arrs) / sizeof(arrs[0]); ++i){
+	//quickSort(arrs,0,len-1);
+	//for(int i = 0; i < len; ++i){
+	//	cout << arrs[i] << endl;
+	//}
+	//堆排序
+ 	//headSort(arrs,len);
+	//归并排序
+	mergeSort(arrs,0,len-1); 
+ 	for(int i = 0; i < len; ++i){
 		cout << arrs[i] << endl;
 	}
-	
 	return 0;
 }
