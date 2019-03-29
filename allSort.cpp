@@ -178,6 +178,7 @@ void mergeSort(int a[], int start, int end)
 
     merge(a, start, mid, end);
 }
+
 int main(){
 	vector<int> arr;
 	int arrs[] = {7,3,8,9,4,2,6};

@@ -5,22 +5,24 @@
 #include<algorithm>
 #include<math.h>
 #include<queue>
+using namespace std;
 
 struct TreeNode{
 	char val;
 	TreeNode *left;
 	TreeNode *right;
-	TreeNode(char x):val(x), left(NULL), right(NULL){}
+	//TreeNode(char x):val(x), left(NULL), right(NULL){}
 };
 
 //递归创建二叉树 
-void create(TreeNode &root){
+void create(TreeNode* root){
 	char ch;
 	cin >> ch;
 	if(ch == '#'){
 		root = NULL;
 	}
-	root = new TreeNode(ch);
+	root = new TreeNode();
+	root->val = ch;
 	create(root->left);//递归建立左子树 
 	create(root->right);//递归建立右子树 
 }
@@ -71,7 +73,17 @@ void lastOrder(TreeNode* root){
 		pNode = tempNode->left;
 	}	
 }
+
+//中序非递归遍历
+void midOrder2(TreeNode* root){
+	if(root == NULL){
+		return;
+	}
+} 
 int main(){
+	TreeNode root;
+	create(&root);
+	//preOrder2(&root);
 	
 	return 0;
 }

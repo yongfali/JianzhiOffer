@@ -4,6 +4,7 @@
 #include<algorithm>
 #include<math.h>
 #include<queue>
+#include<map> 
 using namespace std;
 
 struct ListNode{
@@ -497,7 +498,7 @@ void linkRandomList(RandomListNode* head){
 //3.拆分
 RandomListNode *ChaiFen(RandomListNode* head){
 	if(head == NULL){
-		return;
+		return NULL;
 	}
 	RandomListNode *pNode = head;
 	RandomListNode *result = head->next;
@@ -513,14 +514,204 @@ RandomListNode *ChaiFen(RandomListNode* head){
 
 RandomListNode* Clone(RandomListNode* pHead){
 	if (!pHead) return NULL;
-	nodeClone(pHead);
-	connectRandom(pHead);
-	return reconnect(pHead);
+	copyListNode(pHead);
+	linkRandomList(pHead);
+	return ChaiFen(pHead);
  }
  
+//字符串的排列
+void Permutation(string str, vector<string> & res, int begin){
+	int len = str.size();
+	if(begin == len){
+		res.push_back(str);
+		return;
+	}
+	          
+	for(int i = begin; i < len; i++){
+		//一样的两个数字不需要交换
+		if( i!=begin && str[i] == str[begin])
+			continue;
+		swap(str[i], str[begin]);
+		Permutation(str, res, begin+1);
+	}
+}
+vector<string> Permutation(string str) {
+	vector<string> res;
+	if(str.size()==0)
+		return res;
+	Permutation(str, res, 0);
+	return res;
+}
 
+//数组中出现次数超过一半的数字
+int MoreThanHalfNum(vector<int> arr){
+	map<int,int> numCount;
+	int len = arr.size();
+	if(len == 0){
+		return 0;
+	}
+	if(len == 1){
+		return arr[0];
+	}
+	for(int i = 0; i < len; ++i){
+		if(numCount.count(arr[i])){
+			numCount[arr[i]]++;
+		}
+		else{
+			numCount[arr[i]] = 1;
+		}
+	}
+	auto item = numCount.begin();
+	int tempMax = 0;
+	int num = 0;
+	while(item != numCount.end()){
+		if((item->second) > tempMax){
+			num = item->first;
+			tempMax = item->second;
+		}
+		item++;
+	}
+	if(tempMax * 2 > len){
+		//cout << tempMax << endl;
+		return num;
+	}
+	else{
+		return 0;
+	}
+} 
 
-
+//最小的K个数,通过维护一个K大顶堆即可 ,若果找K大则维护一个K小顶堆即可 
+ vector<int> Get_K_MinNum(vector<int> arr, int k){
+ 	priority_queue<int> maxHeap;
+ 	vector<int> res;
+	int len = arr.size();
+	if(len == 0 || k <=0){
+		return res;
+	}
+	if(k >= len){
+		return arr;
+	}
+	for(int i = 0; i < len; ++i){
+		if(maxHeap.size() < k){
+			maxHeap.push(arr[i]);
+		}
+		else{
+			if(arr[i] < maxHeap.top()){
+				maxHeap.pop();
+				maxHeap.push(arr[i]);
+			}
+		}
+	}
+	for(int i = 0; i < k; i++){
+		res.push_back(maxHeap.top());
+		maxHeap.pop();
+	}
+	
+	return res;
+	  
+ }
+ 
+ //连续子数组的最大和
+ int FindGreatestSumOfSubArray(vector<int> arr){
+ 	int len = arr.size();
+	 if(len == 0){
+ 		return 0;
+ 	}
+ 	int maxSum = 0;
+ 	int currentSum = 0;
+ 	for(int i = 0; i < len; i++){
+ 		//当加上的值小于等于0时说明连续子和中断因为任何一个数加上一个非正数都会
+		//使其值变小。 
+	 	if(currentSum <=0 ){
+	 		currentSum = arr[i];
+	 	}
+	 	else{
+	 		currentSum += arr[i];
+	 	}
+	 	if(currentSum > maxSum){
+	 		maxSum = currentSum;
+	 	}
+	 }
+	 return maxSum;
+ } 
+ 
+ // 一个整数中1出现的次数
+ int NumberOf1Count(int number){
+ 	int count = 0;
+ 	while(number){
+	 	count++;
+	 	number = number & (number - 1);
+	 }
+	 return count;
+ }
+ 
+ //把数组排成最小的数
+ //对数据先排序若a+b < b+a则a在前，b在后，然后对排序后的数组进行拼接就行 
+ bool compare(int a, int b){
+ 	string first = to_string(a) + to_string(b);
+ 	string second = to_string(b) + to_string(a);
+ 	return first < second;
+ }
+ string PrintMinNumber(vector<int> arr){
+ 	int len = arr.size();
+ 	string result;
+ 	if(len == 0){
+	 	return NULL;
+	 }
+	 sort(arr.begin(), arr.end(), compare);
+	 for(int i = 0; i < len; i++){
+ 		result += to_string(arr[i]);
+ 	}
+ 	return result;
+ }
+ 
+ //丑数
+ int GetUglyNumber_Solution(int index) {
+	 if(index <= 0){
+	 	return 0;
+	 }
+	 int factors[] ={2,3,5};
+	 int uglyNumbers[index];
+	 uglyNumbers[0] = 1;
+	 //记录使用的次数这样就不会出现重复的丑数
+	 int num2 = 0, num3 = 0 , num5 = 0;
+	 for(int i = 1; i < index; i++){
+	 	uglyNumbers[i] = min(uglyNumbers[num2] * factors[0], min(uglyNumbers[num3] * factors[1], uglyNumbers[num5] * factors[2]));
+	 	if(uglyNumbers[i] == uglyNumbers[num2]*factors[0])num2++;
+	 	if(uglyNumbers[i] == uglyNumbers[num3]*factors[1])num3++;
+	 	if(uglyNumbers[i] == uglyNumbers[num5]*factors[2])num5++;
+	 }
+ 	return uglyNumbers[index-1];
+ }
+ 
+ //第一个只出现一次的字符
+ char firstAppearCharOnLyOnce(string s){
+ 	int len = s.length();
+ 	if(s == " " || len == 0){
+	 	return ' ';
+ 	}
+	int result[256] = {0};
+ 	for(int i = 0; i < len; i++){
+ 		result[s[i]]++;
+ 	}
+ 	for(int j = 0; j < len; j++){
+ 		//cout << result[s[j]] << endl;
+	 	if(result[s[j]] == 1){
+	 		return s[j];
+	 	}
+ 	}
+ 	return ' ';
+}
+ 
+ //数组中的逆序对
+ int reverseNum(vector<int> arr){
+ 	int len = arr.size();
+ 	if(len == 0 || len == 1){
+	 	return 0;
+	}
+	 
+} 
+  
 int main(){
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
 	//int n;
@@ -537,8 +728,47 @@ int main(){
 	//		cout << *it <<endl;
 	//	}
 //	}
-	vector<int> vec1 = {1,2,3,4,5};
-	vector<int> vec2 = {4,5,3,2,1};
-	cout << IsPopOrder(vec1, vec2) << endl;
+	//vector<int> vec1 = {1,2,3,4,5};
+	//vector<int> vec2 = {4,5,3,2,1};
+	//cout << IsPopOrder(vec1, vec2) << endl;
+	
+	//string str = "abc";
+	//vector<string> result = Permutation(str);
+	//auto item = result.begin();
+	//cout << result.size() <<endl;
+	//while(item != result.end()){
+	//	cout << *item << endl;
+	//	item++;
+	//}
+	vector<int> arr;
+	int n;
+	int temp;
+	int k;
+	/*while(cin >> n >> k){
+		for(int i = 0; i < n; i++){
+			cin >> temp;
+			arr.push_back(temp);
+		}
+		//cout << MoreThanHalfNum(arr) <<endl;
+		auto item = Get_K_MinNum(arr,k).begin();
+		while(item != Get_K_MinNum(arr,k).end()){
+			cout << *item << " ";
+			item++;
+		} 
+		//cout << Get_K_MinNum(arr,k) <<endl;
+		arr.clear();
+	}*/
+	string s;
+	while(cin >> s){
+		/**for(int i = 0; i < n; i++){
+			cin >> temp;
+			arr.push_back(temp);
+		}
+		cout << FindGreatestSumOfSubArray(arr) << endl;**/
+		//cout << NumberOf1Count(n) << endl;
+		//cout <<GetUglyNumber_Solution(n) << endl;
+		cout << firstAppearCharOnLyOnce(s) << endl;
+	}
+	
 	return 0;
 }
