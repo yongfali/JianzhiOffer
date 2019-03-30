@@ -711,7 +711,58 @@ int MoreThanHalfNum(vector<int> arr){
 	}
 	 
 } 
-  
+
+//两个链表的第一个公共节点
+int listLength(ListNode * head){
+	if(head == NULL)
+		return 0;
+	ListNode *pNode = head; 
+	int count = 0;
+	while(pNode != NULL){
+		count++;
+		pNode = pNode->next;
+	}
+	return count;
+}
+    
+ListNode* FindFirstCommonNode( ListNode* pHead1, ListNode* pHead2) {
+	int len1 = listLength(pHead1);
+	int len2 = listLength(pHead2);
+	ListNode *longList, *shortList;
+	int lengthDiff = 0;
+	if(len1 > len2){
+		longList = pHead1;
+		shortList = pHead2;
+		lengthDiff = len1 - len2;
+	}
+	else{
+		longList = pHead2;
+		shortList = pHead1;
+		lengthDiff = len2 - len1;
+	}
+	for(int i = 0; i < lengthDiff; i++)
+		longList = longList->next;
+	while(shortList != NULL && longList != NULL && shortList->val != longList->val){
+		shortList = shortList->next;
+		longList = longList->next;
+	}
+	return shortList;
+}
+
+//数字在排序数组中出现的次数
+int countNum(vector<int> arr, int num){
+	int len = arr.size();
+	if(len == 0)
+		return 0;
+	int count = 0;
+	for(int i = 0; i < len; i++){
+		if(arr[i] == num)
+			count++;
+	}
+	return count;
+}
+
+ 
 int main(){
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
 	//int n;

@@ -75,8 +75,7 @@ int main(){
 		if(count == pointNum){
 			break;
 		}
-	} 
-	
+	} 	
 	return 0;	 
 } 
  
