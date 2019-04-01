@@ -1,10 +1,13 @@
 #include<iostream>
 #include<vector>
 #include<stack>
+#include<string> 
 #include<algorithm>
 #include<math.h>
 #include<queue>
-#include<map> 
+#include<map>
+#include<list>
+
 using namespace std;
 
 struct ListNode{
@@ -762,6 +765,207 @@ int countNum(vector<int> arr, int num){
 	return count;
 }
 
+//二叉树的深度
+int TreeDepth(TreeNode* root){
+	if(root == NULL)
+		return 0;
+	int left = TreeDepth(root->left);
+	int right = TreeDepth(root->right);
+	return left > right ? left + 1 : right + 1;
+	
+}
+
+//判断一棵树是否为平衡二叉树,采用后续遍历这样每一个节点只需要遍历一次就可以，
+//自底向上判断是否符合平衡二叉树的条件 ,depth记录每个节点的深度便于判断 
+bool IsBalance(TreeNode* root, int* depth){
+	if(root == NULL){
+		*depth = 0;
+		return true;
+	}
+	int left, right;
+	if(IsBalance(root->left, &left) && IsBalance(root->right, &right)){
+		int temp = left - right;
+		if(temp >= -1 && temp <= 1){
+			*depth = 1 + (left > right ? left : right);
+			return true;
+		}
+	}
+	return false; 
+} 
+bool IsBalanceBinaryTree(TreeNode* root){
+	int depth = 0;
+	return IsBalance(root, &depth);
+}
+
+//数组中只出现一次的两个数字
+//若是只有一个则异或最后剩下的就是那个唯一一次的数字，因为任何相同的异或都为0 
+void FindTwoAppearOnce(vector<int> arr){
+	int len = arr.size();
+	if(len < 2)
+		return;
+	int num1 = 0, num2 = 0;
+	int result = arr[0]; //result的结果为两个出现一次数字的异或结果 
+	for(int i = 1; i < len; ++i)
+		result ^= arr[i];
+	
+	int indexOf1FirstAppear = (result ^ (result -1)) & result;//找到第一次出现1的位置然后根据此条件对数组进行划分
+	
+	for(int i = 0; i < len; ++i){
+		if(arr[i] & (1 << indexOf1FirstAppear - 1))
+			num1 ^= arr[i];
+		else
+			num2 ^= arr[i];
+	}
+	cout << num1 << " " << num2 << endl; 	
+} 
+ 
+//和为S的连续正数序列  
+vector<vector<int> > FindContinuousSequence(int sum) {
+	int small =1, big = 2;
+	int middle = (sum + 1) / 2;
+	int currentSum = small + big;
+	vector<vector<int>> allSequence;
+	if(sum < 3)
+		return allSequence;
+
+	vector<int> temp;
+	while(small < middle){
+		temp.push_back(small);
+		temp.push_back(big);
+		if(currentSum == sum){
+			allSequence.push_back(temp);
+		}
+		else if(currentSum < sum){
+			big++;
+			currentSum += big;
+			temp.push_back(big);
+		}
+		else{
+			currentSum -= small;
+			small++;
+			temp.erase(temp.begin());
+		}
+	}
+	temp.clear();
+	return allSequence;
+}
+
+// 左旋转字符串,调用string的库函数substr()和erase()
+string LeftRotateString(string str, int n){
+	int len = str.length();
+	if(n < 0 || len <= 0) return NULL;
+	if(n == 0) return str;
+	
+	string temp = str.substr(0,n);
+	str.erase(0,n);
+	str += temp;
+	return str;	 
+}
+
+//翻转单词顺序调用string的库函数reverse(const int &begin， const int &end)
+string reverseStringOfWord(string str){
+	int len = str.size();
+	//cout << len << endl;
+	if(len == 0) return NULL;
+	reverse(str.begin(), str.end());//第一次翻转所有字符，然后再根据空格对单个单词进行翻转即可
+	int start = 0;
+	for(int i = 0; i < len; ++i){
+		if(str[i] == ' '){
+			reverse(str.begin() + start, str.begin() + i);
+			start = i + 1;			
+		}
+		if(i == len - 1)
+			reverse(str.begin(), str.end());			
+	}
+	return str; 
+} 
+
+//扑克牌顺子
+bool IsConnection(vector<int> arr){
+	int len = arr.size();
+	if(len == 0 || len < 5)
+		return false;
+	sort(arr.begin(), arr.end());
+	int NumberOfZero = 0;
+	for(int i = 0; i < len; ++i){
+		if(arr[i] == 0)
+			NumberOfZero++;
+	}
+	int Gaps = 0;
+	for(int i = NumberOfZero; i < len - 1; ++i){
+		if(arr[i] == arr[i+1])
+			return false;
+		Gaps += arr[i+1] - arr[i] - 1;
+	}
+	
+	return NumberOfZero < Gaps ? false : true;
+}
+
+//约瑟夫问题，即环形链表中每次剔除一个数据，最后剩下的是什么,n为长度，K为每次剔除的位置大小 
+int LastRemind(int n, int k){
+	if(n < 1 || k < 1) return -1;
+	list<int> listArr;
+	for(int i = 0; i < n; i++)
+		listArr.push_back(i);
+	auto item = listArr.begin();
+	while(listArr.size() > 1){
+		for(int i = 0; i < k - 1; i++){
+			item++;
+			if(item == listArr.end()) //当走到链表的尾部时让它重新指向头结点，这样就能形成环装。 
+				item = listArr.begin();
+		}
+		item = listArr.erase(item++);
+		if(item == listArr.end())
+			item = listArr.begin();
+	}
+	return *item; 
+}
+
+//不用加减乘除求两个数之和
+int Add(int num1, int num2){
+	int sum, operate;
+	while(operate != 0){
+		sum = num1 ^ num2;
+		operate = (num1 & num2) << 1;
+		num1 = sum;
+		num2 = operate;
+	}
+	return num1;
+} 
+
+
+//把字符串转换为整数
+long StringToInt(string str){
+	int len = str.length();
+	if(len == 0)
+		return 0;
+	int dig = true;
+	int i = 0;
+	long num = 0;
+	while(str[i]== ' ')
+		i++;
+	
+	//进行符号判断
+	if(str[i]=='+')
+		i++;
+	if(str[i]=='-'){
+		i++;
+		dig =false;
+	}
+	while(str[i] != '\0'){
+		//对字符进行是否为数字的判断
+		if(str[i] >= '0' && str[i] <= '9'){
+			int flag = dig ? 1 : -1;
+			num = num * 10 + flag * (str[i] - '0');
+			i++;
+		}
+		else
+			return 0;            
+	}
+	return num;
+}
+
+// 构建乘积数组               
  
 int main(){
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
@@ -779,7 +983,12 @@ int main(){
 	//		cout << *it <<endl;
 	//	}
 //	}
-	//vector<int> vec1 = {1,2,3,4,5};
+	//vector<int> vec1 = {1,2,3,0,5};
+	//cout << IsConnection(vec1) << endl;
+	//cout << LastRemind(5,3) << endl;
+	//cout << Add(5,17) << endl;
+	string str = "    1a33";
+	cout << StringToInt(str) << endl;
 	//vector<int> vec2 = {4,5,3,2,1};
 	//cout << IsPopOrder(vec1, vec2) << endl;
 	
@@ -791,26 +1000,27 @@ int main(){
 	//	cout << *item << endl;
 	//	item++;
 	//}
-	vector<int> arr;
+	/**vector<int> arr;
 	int n;
 	int temp;
 	int k;
-	/*while(cin >> n >> k){
+	while(cin >> n){
 		for(int i = 0; i < n; i++){
 			cin >> temp;
 			arr.push_back(temp);
 		}
+		FindTwoAppearOnce(arr);
 		//cout << MoreThanHalfNum(arr) <<endl;
-		auto item = Get_K_MinNum(arr,k).begin();
-		while(item != Get_K_MinNum(arr,k).end()){
-			cout << *item << " ";
-			item++;
-		} 
+	//	auto item = Get_K_MinNum(arr,k).begin();
+		//while(item != Get_K_MinNum(arr,k).end()){
+		//	cout << *item << " ";
+		//	item++;
+		//} 
 		//cout << Get_K_MinNum(arr,k) <<endl;
-		arr.clear();
-	}*/
-	string s;
-	while(cin >> s){
+		//arr.clear();
+	}**/
+	//string s;
+	//while(cin >> s){
 		/**for(int i = 0; i < n; i++){
 			cin >> temp;
 			arr.push_back(temp);
@@ -818,8 +1028,16 @@ int main(){
 		cout << FindGreatestSumOfSubArray(arr) << endl;**/
 		//cout << NumberOf1Count(n) << endl;
 		//cout <<GetUglyNumber_Solution(n) << endl;
-		cout << firstAppearCharOnLyOnce(s) << endl;
-	}
+		//cout << firstAppearCharOnLyOnce(s) << endl;
+	//}
+	
+	/**string str;
+	int n;
+	while(cin >> str){
+		//cout << LeftRotateString(str, n) << endl;
+		reverseStringOfWord(str);
+		//cout << reverseStringOfWord(str)<< " "; 
+	}**/
 	
 	return 0;
 }
