@@ -965,8 +965,127 @@ long StringToInt(string str){
 	return num;
 }
 
-// 构建乘积数组               
- 
+// 构建乘积数组,分别求两个对角阵的值然后相乘               
+vector<int> multiply(vector<int> arr){
+	vector<int> arr1;
+	int len = arr.size();
+	if(len == 0) return arr1;
+	arr1[0] = 1;
+	for(int i = 1; i < len; i++)
+		arr1[i] = arr1[i-1] * arr[i-1]; 
+	int temp = 1;
+	for(int i = len - 2; i >= 0; i--){
+		temp *= arr[i+1];
+		arr1[i] *= temp;
+	}
+	return arr1;	
+}
+
+//正则表达式匹配
+bool match(string str, string pattern){
+	
+}
+
+//表示数值的字符串
+bool IsNumber(string str){
+	if(str == " ") return false;
+	int len = str.length();
+	int num = 0; //用来统计数字的数目
+	int nume = 0; //用来统计E的数目
+	int dot = 0; //Y用来统计小数点数目
+	int i = 0; //表示字符串的位数
+	if(str[i] == '+' || str[i] == '-') i++; //判断首字符是否是正负号
+	if(str[i] == '\0') return false;
+	while(i < len){
+		if(isdigit(str[i])){
+			num = 1; //只要表示有数字就行
+			i++; 			
+		}
+		else if(str[i] == '.'){
+			if(dot > 0 || nume > 0) return false; //当出现小数点时前面不能有小数点和e 
+			dot++;
+			i++;
+		}
+		else if(str[i] == 'e' || str[i] == 'E'){
+			//cout << i <<endl;
+			if(num == 0 || nume > 0) return false;
+			nume++;
+			i++;
+			if(str[i] == '\0') return false;//说明E后面没有数字
+			if(str[i] == '+' || str[i] == '-')i++;//E后面可以出现正负号 
+			if(str[i] == '\0') return false;//说明E后面出现正负号但是没有数字 
+		}
+		else{
+			return false;
+		} 
+	} 
+	return true;
+}
+
+//字符流中第一个不重复的数字，定义一个map计数，第一次为1的弹出就行
+char FirstAppearOnce(string str){
+	int len = str.length();
+	if(len == 0 || str == " ") return '#';
+	map<char, int> temp ;
+	for(int i = 0; i < len; i++){
+		if(temp.count(str[i]))
+			temp[str[i]]++;
+		else
+			temp[str[i]] = 1;				
+	}
+	auto item = temp.begin();
+	while(item != temp.end()){
+		if(item->second == 1)
+			return item->first;
+		else
+			item++;
+	}
+	return '#';
+} 
+
+//循环链表的入口,首先判断链表是否有环，采用快慢指针若相遇则有环
+//然后统计环的大小，便可以采用寻找第K个节点的办法进行遍历 ，即先走K步跟找倒数第
+//K个节点先走K-1步有点差别
+ListNode* MettingNode(ListNode* root){
+	ListNode *pNode = root;
+	ListNode *firstNode, *secondNode;
+	firstNode = secondNode = pNode;
+	while(firstNode->next != NULL && secondNode->next->next != NULL){
+		if(firstNode->val == secondNode->next->next->val)return firstNode;
+		firstNode = firstNode -> next;
+		secondNode = secondNode -> next -> next;
+	}
+	return NULL;
+} 
+
+ListNode* EnterNodeOfLoop(ListNode* root){
+	if(root == NULL) return NULL;
+	ListNode *meetingNode = MettingNode(root);
+	if(meetingNode == NULL) return NULL;
+	int loopNum = 1;
+	ListNode *pNode = meetingNode;
+	while(pNode->next != meetingNode){
+		pNode = pNode->next;
+		loopNum++;
+	}
+	ListNode *firstNode, *secondNode;
+	firstNode = secondNode = root;
+	for(int i = 0; i < loopNum; ++i)
+		secondNode = secondNode -> next;
+	while(firstNode != secondNode){
+		firstNode = firstNode -> next;
+		secondNode = secondNode -> next;
+	}
+	return firstNode; 
+}
+
+//删除排序链表中重复的节点
+ListNode* DeleteDuplication(ListNode* root){
+	if(root == NULL || root->next == NULL) return root;
+	ListNode *pNode = root;
+	
+	
+} 
 int main(){
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
 	//int n;
@@ -987,8 +1106,10 @@ int main(){
 	//cout << IsConnection(vec1) << endl;
 	//cout << LastRemind(5,3) << endl;
 	//cout << Add(5,17) << endl;
-	string str = "    1a33";
-	cout << StringToInt(str) << endl;
+	string str = "gomognlele";
+	cout << FirstAppearOnce(str) << endl;
+	//cout << StringToInt(str) << endl;
+	//cout << IsNumber(str) << endl;
 	//vector<int> vec2 = {4,5,3,2,1};
 	//cout << IsPopOrder(vec1, vec2) << endl;
 	
