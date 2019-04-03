@@ -27,6 +27,14 @@ struct RandomListNode{
 	int val;
 	RandomListNode *next, *random;
 	RandomListNode(int x):val(x), next(NULL), random(NULL){}
+};
+
+struct TreeLinkNode{
+	int val;
+	TreeLinkNode *left;
+	TreeLinkNode *right;
+	TreeLinkNode *next;	//指向父节点的指针 
+	TreeLinkNode(int x): val(x), left(NULL),right(NULL),next(NULL){} 
 }; 
 
 //字符串空格替换 
@@ -1079,35 +1087,246 @@ ListNode* EnterNodeOfLoop(ListNode* root){
 	return firstNode; 
 }
 
-//删除排序链表中重复的节点
-ListNode* DeleteDuplication(ListNode* root){
-	if(root == NULL || root->next == NULL) return root;
-	ListNode *pNode = root;
+//删除排序链表中重复的节点，让pre指向第一没有重复的节点则中间的节点就相当于在链表中删除了 
+ListNode* DeleteDuplication(ListNode* pHead){
+	// 链表有0个/1个节点，返回第一个节点
+	if(pHead == NULL||pHead->next == NULL)
+		return pHead;
+	else
+	{
+		// 新建一个头节点，防止第一个结点被删除
+		ListNode* newHead = new ListNode(-1);
+		newHead->next = pHead;
+		         
+		// 建立索引指针
+		ListNode* p = pHead;      // 当前节点
+		ListNode* pre = newHead;  // 当前节点的前序节点
+		ListNode* next = p->next;    // 当前节点的后序节点
 	
-	
+		// 从头到尾遍历编标
+		while(p != NULL && p->next != NULL)
+		{
+			if(p->val == next->val)//如果当前节点的值和下一个节点的值相等
+			{
+				// 循环查找，找到与当前节点不同的节点
+				while(next != NULL && next->val == p->val)
+				{
+					ListNode* temp = next;
+					next = next->next;	
+					// 删除内存中的重复节点
+					delete temp;
+					temp = nullptr;
+				}
+				pre->next = next;
+				p = next;
+			}
+			else//如果当前节点和下一个节点值不等，则向后移动一位
+			{
+				pre = p;
+				p = p->next;
+			}
+			next = p->next; //这句两个条件内都有则提到外面公用。 
+		}
+	return newHead->next;//返回头结点的下一个节点
+	}
+}
+
+//二叉树的下一个节点
+/**
+1：如果当前节点存在右子树，则找右子树的最左节点
+2：如果没有右子树，当前节点的下一个节点分两种情况
+2.1：当前节点是其父节点的左子树，则下一个节点为其父节点
+2.1：当前节点是其父节点的右子树，则沿着父节点向上遍历直到找到一个父节点是其
+	父节点的左子节点，那么该父节点的父节点就是要找的下一个节点，否则为空 
+**/ 
+TreeLinkNode* NextTreeNode(TreeLinkNode* pNode){
+	if(pNode == NULL) return NULL;
+	TreeLinkNode *pNext;
+	if(pNode->right != NULL){
+		TreeLinkNode *temp = pNode->right;
+		while(pNode->left)
+			temp = temp->left;
+		pNext = temp;
+	}
+	else if(pNode->next != NULL){
+		TreeLinkNode *pCurrent = pNode;
+		TreeLinkNode *pParent = pNode->next;
+		while(pParent !=NULL && pCurrent == pParent -> right){
+			pCurrent = pParent;
+			pParent = pParent->next;
+		}
+		pNext = pParent;
+	} 
+	return pNext;
+}
+
+//对称二叉树判断
+bool isSymmetrical(TreeNode* root1, TreeNode* root2){
+	if(root1 == NULL && root2 == NULL) return true;
+	if(root1 == NULL || root2 == NULL) return false;
+	if(root1->val != root2->val) return false;
+	return isSymmetrical(root1->left, root2->right) && isSymmetrical(root1->right, root2->left);
+}
+bool isSymmetrical(TreeNode* root){
+	return isSymmetrical(root, root);
+}
+
+//分行从上到下打印二叉树
+void printBinaryTree(TreeNode* root){
+	if(root == NULL) return;
+	queue<TreeNode*> que;
+	que.push(root);
+	int toBePrintNum = 1; //记录当前层没打印的节点数 
+	int nextLevelNode = 0; // 记录下一层要打印的节点数 
+	while(!que.empty()){
+		TreeNode *temp = que.front();
+		cout << temp->val << " ";
+		
+		if(temp->left){
+			que.push(temp->left);
+			nextLevelNode++;
+		}
+		if(temp->right){
+			que.push(temp->right);
+			nextLevelNode++;
+		}
+		que.pop();
+		if(toBePrintNum == 0){
+			cout << endl;
+			toBePrintNum = nextLevelNode;
+			nextLevelNode = 0;
+		}
+	}
+}
+
+// 按之字形打印二叉树，在上面代码加入一个层数统计就行，奇数层按从左到右进队列，偶数层按从右到左进队列就行
+vector<vector<int> > Print(TreeNode* pRoot) {
+	vector<vector<int>> res;
+	if(pRoot == NULL)
+		return res;
+	queue<TreeNode*> que;
+	que.push(pRoot);
+	bool even = false;
+	while(!que.empty()){
+		vector<int> vec;
+		const int size = que.size();
+		for(int i=0; i<size; ++i){
+			TreeNode* tmp = que.front();
+			que.pop();
+			vec.push_back(tmp->val);
+			if(tmp->left != NULL)
+				que.push(tmp->left);
+			if(tmp->right != NULL)
+				que.push(tmp->right);
+		}
+		if(even)
+			std::reverse(vec.begin(), vec.end());
+		res.push_back(vec);
+		even = !even;
+	}
+	return res;
+}
+
+//二叉搜索树的第K个节点,其中序遍历是按照从小到大的顺序排的，若超时则添加一个计数器提前终止递归 
+vector<int> MiddleSearch(TreeNode* root){
+	vector<int> result;
+	if(root == NULL) return result;
+	MiddleSearch(root->left);
+	result.push_back(root->val);
+	MiddleSearch(root->right);
+	return result;
 } 
+int kthNode(TreeNode* root, int k){
+	vector<int> result;
+	result = MiddleSearch(root);
+	return result[k-1];	 	
+} 
+
+//两个有序数组中第K大的数字，即Top K问题 
+/**
+
+假设A 和B 的元素个数都大于k/2，我们将A 的第k/2 个元素（即A[k/2-1]）和B 的第k/2个元素（即B[k/2-1]）进行比较，
+有以下三种情况（为了简化这里先假设k 为偶数，所得到的结论对于k 是奇数也是成立的）：
+A[k/2-1] == B[k/2-1]  则返回array1[k/2-1]或者array2[k/2-1]
+A[k/2-1] > B[k/2-1] 则array2在[0,k/2-1]范围内的元素一定比array1、array2合并后第k个元素小，可以不用考虑array2在[0,k/2-1]范围内的元素
+A[k/2-1] < B[k/2-1] 则array1在[0,k/2-1]范围内的元素一定比array1、array2合并后第k个元素小，可以不用考虑array1在[0,k/2-1]范围内的元素
+因此算法可以写成一个递归的形式，递归结束的条件为：
+1）array1[k/2-1] == array2[k/2-1] return array1[k/2-1]
+2）array1或者array2为空时，return array1[k-1]或者array2[k-1]
+3）k==1时，返回min(array1[0],array2[0])
+
+**/
+double FindKthNum(int a[],int len1, int b[], int len2, int k){
+	//始终认为len1<len2
+	if(len1 > len2) return FindKthNum(b, len2, a, len1, k); //始终保持短的数组在前 
+	if(len1 == 0) return b[k-1];
+	if(k == 1) return min(a[0], b[0]);
+	
+ 	//将k分为两部分，分别在a和b数组上查找
+	int k1 = min(k/2, len1);
+	int k2 = k - k1;
+	
+	if(a[k1-1] < b[k2-1])
+		return FindKthNum(a+k1, len1-k1, b, len2, k-k1); //数组指针加上一个偏移量表示指到对应下标位置 
+		
+	else if(a[k1-1] > b[k2-1])
+		return FindKthNum(a, len1, b+k2,len2-k2, k-k2);  
+	
+	else
+		return a[k1-1];	
+}
+
+//滑动窗口中的最大值,s使用双端队列存的数据的下表而不是数值，始终保持窗口的最大值在双端队列的头部 
+vector<int> maxInWindowOfK(vector<int> arr, int k){
+	int len = arr.size();
+	vector<int> res;
+	if(len == 0 || k <= 0) return res;
+	if(k == 1) return arr;
+	deque<int> deq;
+	for(int i = 0; i < len; i++){
+		//判断队列头部最大值是否要移除队列
+		if(i >= k && deq.front() <= i - k) 
+			deq.pop_front();
+		//移除当前队列里小于当前值的数，因为进来一个大的后小的不可能不出现在窗口最大值中 
+		while(!deq.empty() && arr[i] >= arr[deq.back()]) 
+	 		deq.pop_back();
+	 	deq.push_back(i);
+	 	// 滑动窗口经过K个元素，获取当前的最大值，也就是队列的头元素
+	 	if(i >= k - 1) 
+			res.push_back(arr[deq.front()]);   	
+	}
+	return res;	
+} 
+
+//矩阵中的路径
+ 
 int main(){
+	int arr1[4] = {1,2,3,4};
+	int arr2[4] = {5,6,7,8};
+	cout << FindKthNum(arr1,4,arr2,4,6) << endl;
+	
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
-	//int n;
-	//vector<int> vec;
-	//while(cin >> n){
-	//	int temp;
-	//	for(int i = 0; i< n; i++){
-	//		cin >> temp;
-	//		vec.push_back(temp);
-	//	}
-	//	vector<int> result = reverseArr(vec);
-	//	vector<int>::iterator it = result.begin();
-	//	for(; it != result.end(); it++){
-	//		cout << *it <<endl;
-	//	}
-//	}
+	int n,k;
+	vector<int> vec;
+	while(cin >> n >> k){
+		int temp;
+		for(int i = 0; i< n; i++){
+			cin >> temp;
+			vec.push_back(temp);
+		}
+		//vector<int> result = reverseArr(vec);
+		vector<int> result = maxInWindowOfK(vec,k);
+		auto it = result.begin();
+		for(; it != result.end(); it++){
+			cout << *it <<endl;
+		}
+	}
 	//vector<int> vec1 = {1,2,3,0,5};
 	//cout << IsConnection(vec1) << endl;
 	//cout << LastRemind(5,3) << endl;
 	//cout << Add(5,17) << endl;
-	string str = "gomognlele";
-	cout << FirstAppearOnce(str) << endl;
+	//string str = "gomognlele";
+	//cout << FirstAppearOnce(str) << endl;
 	//cout << StringToInt(str) << endl;
 	//cout << IsNumber(str) << endl;
 	//vector<int> vec2 = {4,5,3,2,1};

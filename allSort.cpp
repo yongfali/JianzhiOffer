@@ -179,9 +179,26 @@ void mergeSort(int a[], int start, int end)
     merge(a, start, mid, end);
 }
 
+//希尔排序（也是一种插入排序 NlogN）,每次根据gap进行分组，然后对分组进行插入排序
+//直到gap=1时排序完成 为不稳定排序，因为遇到相等的有可能给分开了。 
+void ShellSort(vector<int> arr){
+	int len = arr.size();
+	int gap = len / 2; //gap表示分为几组了，也可以说是数据之间的间隔 
+	for(; gap > 0; gap /= 2){ //分多少次进行插入排序 
+		for(int i = gap; i < len; i++){ //对每个分组进行插入排序 
+			int j = i;
+			while(j - gap >=0 && arr[j] < arr[j - gap]){
+				swap(arr[j], arr[j-gap]);
+				j -= gap;
+			}
+		}
+	}
+	Print(arr, len);	
+}
+ 
 int main(){
 	vector<int> arr;
-	int arrs[] = {7,3,8,9,4,2,6};
+	int arrs[] = {7,3,8,9,4,2,6,1,0};
 	int len = sizeof(arrs) / sizeof(arrs[0]);
 	//cout << len <<endl;
 	//int temp[len];
@@ -205,9 +222,13 @@ int main(){
 	//堆排序
  	//headSort(arrs,len);
 	//归并排序
-	mergeSort(arrs,0,len-1); 
- 	for(int i = 0; i < len; ++i){
-		cout << arrs[i] << endl;
-	}
+	//mergeSort(arrs,0,len-1); 
+ 	//for(int i = 0; i < len; ++i){
+	//	cout << arrs[i] << endl;
+	//}
+	
+	//希尔排序
+	ShellSort(arr); 
+	
 	return 0;
 }
