@@ -1299,7 +1299,86 @@ vector<int> maxInWindowOfK(vector<int> arr, int k){
 } 
 
 //矩阵中的路径
+static int row,col;
+//判断该点是否已经走过 
+bool Path(char* matrix, vector<int>right ,int i, int j, char* str){
+	if(i<0||j<0||i>=row||j>=col)//越界
+		return false;
+	if(matrix[i*col+j] == *str && right[i*col+j] == 0){
+		right[i*col+j] = 1;
+		if(*(str+1) == 0)
+			return true;
+		bool flag = Path(matrix,right,i,j+1,str+1)||
+					Path(matrix,right,i+1,j,str+1)||
+					Path(matrix,right,i-1,j,str+1)||
+					Path(matrix,right,i,j-1,str+1);
+		if(!flag)
+			right[i*col+j] = 0;
+		return flag;
+	}
+	else
+		return false;
+}
  
+bool hasPath(char* matrix, int rows, int cols, char* str){
+	row = rows;
+	col = cols;
+	vector<int> right(row*col,0); //初始化vector表示所有的格都没有走过 
+	bool flag = false;
+	for(int i = 0; i < rows; i++)
+		for(int j = 0 ; j < cols; j++)
+			flag = (flag || Path(matrix,right,i,j,str));
+	
+	return flag;
+}
+
+//机器人的运动范围
+class Solution {
+public:
+     int movingCount(int threshold, int rows, int cols)
+    {
+        bool* flag=new bool[rows*cols];
+        for(int i=0;i<rows*cols;i++)
+            flag[i]=false;
+        int count=moving(threshold,rows,cols,0,0,flag);
+        delete[] flag;
+        return count;
+    }
+    //计算最大移动位置
+    int moving(int threshold,int rows,int cols,int i,int j,bool* flag)
+    {
+        int count=0;
+        if(check(threshold,rows,cols,i,j,flag))
+        {
+            flag[i*cols+j]=true;
+            count= 1 + moving(threshold,rows,cols,i-1,j,flag)
+                   + moving(threshold,rows,cols,i,j-1,flag)
+                   + moving(threshold,rows,cols,i+1,j,flag)
+                   + moving(threshold,rows,cols,i,j+1,flag);
+        }
+        return count;
+    }
+    //检查当前位置是否可以访问
+    bool check(int threshold,int rows,int cols,int i,int j,bool* flag)
+    {
+        if(i>=0 && i<rows && j>=0 && j<cols
+            && getSum(i)+getSum(j)<=threshold
+            && flag[i*cols+j]==false)
+           return true;
+        return false;
+    }
+    //计算位置的数值
+    int getSum(int number)
+    {
+        int sum=0;
+        while(number>0)
+        {
+            sum+=number%10;
+            number/=10;
+        }
+        return sum;
+    }
+}; 
 int main(){
 	int arr1[4] = {1,2,3,4};
 	int arr2[4] = {5,6,7,8};
