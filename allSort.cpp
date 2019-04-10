@@ -172,7 +172,8 @@ void mergeSort(int a[], int start, int end)
     if(a==NULL || start >= end)
         return ;
 
-    int mid = (end + start)/2;
+    //int mid = (end + start)/2;
+    int mid = start + (end - start) / 2; //¿Î·ÀÖ¹ÏÂ±íÒç³ö 
     mergeSort(a, start, mid);
     mergeSort(a, mid+1, end);
 
@@ -222,13 +223,13 @@ int main(){
 	//¶ÑÅÅĞò
  	//headSort(arrs,len);
 	//¹é²¢ÅÅĞò
-	//mergeSort(arrs,0,len-1); 
- 	//for(int i = 0; i < len; ++i){
-	//	cout << arrs[i] << endl;
-	//}
+	mergeSort(arrs,0,len-1); 
+ 	for(int i = 0; i < len; ++i){
+		cout << arrs[i] << endl;
+	}
 	
 	//Ï£¶ûÅÅĞò
-	ShellSort(arr); 
+	//ShellSort(arr); 
 	
 	return 0;
 }
