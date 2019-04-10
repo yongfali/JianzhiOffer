@@ -7,7 +7,7 @@ using namespace std;
 //求两个区间内的所有素数，主要该数不能被2 ~ 根号m 之间的每一个整数去除就可以了
 bool isSuShu(int number){
 	for(int i = 2; i <= (int)sqrt(number); i++){
-		if(number % 2 == 0)
+		if(number % i == 0)
 			return false;
 	}
 	return true;
