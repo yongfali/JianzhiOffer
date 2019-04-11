@@ -196,7 +196,76 @@ void ShellSort(vector<int> arr){
 	}
 	Print(arr, len);	
 }
- 
+
+//桶排序，N个数据一次 放入N+1个桶中（桶按照从小到大的顺序排列），然后遍历桶
+//中是否有数，一次打出即可，时间复杂度为O(n),需要O(n)的空间复杂度。
+
+void TongSort(int arr[], int n){
+	if(n <= 0) return;
+	int max = arr[0];
+	int min = arr[0];
+	for(int i = 1; i < n; i++){
+		if(arr[i] > max)
+			max = arr[i];
+		if(arr[i] < min)
+			min = arr[i];
+	} 
+	cout << max << " " << min << endl;
+	int temp[max - min +1] = {0};//根据数组中最大值和最小值只差决定桶的个数，防止有0 则加1； 
+	
+	for(int i = 0; i < n; i++) //把数组放入桶中，标记每一个数字出现的次数 
+		temp[arr[i]]++;
+		
+	for(int i = 0; i < max - min + 1; i++){
+		for(int j = 0; j < temp[i]; j++){
+			cout << i << endl;
+		}
+	} 	 
+}
+
+// 基数排序，分配十个桶（因为数字是0-9），然后依次根据每个数的位数对应位大小排到
+//对应的桶里。（LSD，即从最低位依次排序， MSD 即从最高位开始依次排序） 
+
+void jiShuSort(int arr[], int n){
+	int temp[10][n];//定义十个桶（0~9）
+	int num[10] = {0}; //记录每个桶中保存的元素的个数 
+	int max = arr[0];
+	for(int i = 1; i < n; i++){
+		if(arr[i] > max)
+			max = arr[i];
+	}
+	
+	int weishu = (int)log10(max*1.0) + 1; //记录最大数据的位数，即可以判断需要比较的次数
+	
+	//cout << weishu <<endl;
+	//由最低位开始，依次按照关键字进行分配
+	for(int i = 0; i < weishu; i++){
+		//扫描所有数组元素，将元素分配到对应的桶中
+		for(int j = 0; j < n; j++){
+  			//取出该元素对应第i+1位上的数字，比如341，现在要取出十位上的数字，341%100=41,41/10=4
+			int pos = (arr[j] % (int) pow(10, i + 1)) / (int) pow(10,i); 
+			temp[pos][num[pos]] = arr[j];
+			num[pos]++;
+		}
+		
+  		//分配完之后，将桶中的元素依次复制回数组
+		int count = 0; //元素计数器 ，根据每个桶中的元素依次输出桶内的数据即为排序数据 
+		for(int i = 0; i < 10; i++){
+			if(num[i] !=0){
+				for(int j = 0; j < num[i]; j++)
+					arr[count++] = temp[i][j];
+			}
+			num[i] = 0; //当一个桶内的元素全部输出后该桶内的计数清零 
+		}
+	} 	 
+} 
+
+
+//计数排序，和桶排序一样，是统计每个元素出现的次数，然后根据次数进行输出 
+void tongJiSort(){
+	
+} 
+
 int main(){
 	vector<int> arr;
 	int arrs[] = {7,3,8,9,4,2,6,1,0};
@@ -223,13 +292,27 @@ int main(){
 	//堆排序
  	//headSort(arrs,len);
 	//归并排序
-	mergeSort(arrs,0,len-1); 
+	/**mergeSort(arrs,0,len-1); 
  	for(int i = 0; i < len; ++i){
 		cout << arrs[i] << endl;
-	}
+	}*/
 	
 	//希尔排序
 	//ShellSort(arr); 
+	
+	//桶排序
+	
+	//cout << "桶排序：" << endl; 
+ 	//TongSort(arrs, len);
+ 	
+ 	//基数排序
+ 	int arr1[] = {15,25,104,78,34,21,341,41,2};
+	int len1 = sizeof(arr1) / sizeof(arr1[0]);
+	jiShuSort(arr1,len1);
+	for(int i = 0; i < len1; ++i){
+		cout << arr1[i] << endl;
+	}
+	 
 	
 	return 0;
 }
