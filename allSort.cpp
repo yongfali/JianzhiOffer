@@ -4,6 +4,7 @@
 #include<algorithm>
 #include<math.h>
 #include<queue>
+
 using namespace std;
 
 void Print(vector<int> arr, int len){
@@ -126,7 +127,7 @@ void headAdjust(int arr[], int start, int end){
 		}
 	}
 }
- 
+
 void headSort(int arr[], int len){
 	//因为只有（n/2-1)之前的节点才开始有子节点。
 	//对于大顶堆a[i]>=a[2*i+1] &&  a[i]>=a[2*i+2], i(0,n/2-1)
@@ -290,7 +291,14 @@ int main(){
 	//	cout << arrs[i] << endl;
 	//}
 	//堆排序
- 	//headSort(arrs,len);
+	for(int i = 0; i < len; ++i){
+		cout << arrs[i] << endl;
+	}
+ 	headSort(arrs,len);
+	for(int i = 0; i < len; ++i){
+		cout << arrs[i] << endl;
+	}
+ 	cout << endl;
 	//归并排序
 	/**mergeSort(arrs,0,len-1); 
  	for(int i = 0; i < len; ++i){
@@ -306,12 +314,12 @@ int main(){
  	//TongSort(arrs, len);
  	
  	//基数排序
- 	int arr1[] = {15,25,104,78,34,21,341,41,2};
-	int len1 = sizeof(arr1) / sizeof(arr1[0]);
-	jiShuSort(arr1,len1);
-	for(int i = 0; i < len1; ++i){
-		cout << arr1[i] << endl;
-	}
+ 	//int arr1[] = {15,25,104,78,34,21,341,41,2};
+	//int len1 = sizeof(arr1) / sizeof(arr1[0]);
+	//jiShuSort(arr1,len1);
+	//for(int i = 0; i < len1; ++i){
+	//	cout << arr1[i] << endl;
+	//}
 	 
 	
 	return 0;

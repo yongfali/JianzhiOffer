@@ -1,12 +1,12 @@
-#include<iostream>
-#include<vector>
-#include<stack>
-#include<string> 
-#include<algorithm>
-#include<math.h>
-#include<queue>
-#include<map>
-#include<list>
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <string> 
+#include <algorithm>
+#include <math.h>
+#include <queue>
+#include <map>
+#include <list>
 
 using namespace std;
 
@@ -20,7 +20,7 @@ struct TreeNode{
 	int val;
 	TreeNode *left;
 	TreeNode *right;
-	TreeNode(int x):val(x), left(NULL), right(NULL){}
+	TreeNode(int x):val(x), left(NULL), right(NULL){} //构造函数成员数据初始化操作
 };
 
 struct RandomListNode{
@@ -105,7 +105,7 @@ TreeNode* binaryTree(vector<int>a, int abegin, int aend, vector<int>b, int bbegi
 	root->right = binaryTree(a, abegin+i-bbegin+1, aend, b, i+1, bend);
 	return root;
 }
- 
+
 TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
 	return binaryTree(pre,0,pre.size(),vin,0,vin.size());
 }
@@ -217,33 +217,33 @@ vector<int> reverseArr(vector<int> arr){
 	}
 	return res;
 } 
- 
+
  //链表中倒数第K个节点,定义两个指针，让第一个指针先走k-1步，然后两个指针一起走
  //直到第一个指针走到链表尾部，第二个指针所指的地方为第K个指针 
- ListNode* FindLastKNode(ListNode* head, int k){
- 	if(head == NULL){
-	 	return NULL;
-	 }
-	 ListNode *p1, *p2;
-	 p1 = p2 = head;
-	 for(int i = 0; i < k -1; k++){
- 		if(p1 -> next == NULL){
-		 	return NULL;
-		 }
-		 else{
- 			p1 = p1 -> next;
- 		}
- 	}
+ListNode* FindLastKNode(ListNode* head, int k){
+	if(head == NULL){
+		return NULL;
+	}
+	ListNode *p1, *p2;
+	p1 = p2 = head;
+	for(int i = 0; i < k -1; k++){
+		if(p1 -> next == NULL){
+			return NULL;
+		}
+		else{
+			p1 = p1 -> next;
+		}
+	}
 	while(p1->next != NULL){
 		p2 = p2->next;
 		p1 = p1->next;
 	}
 	return p2;  
- }
- 
+}
+
  //链表反转分别定义三个指针保存前一个和后一个节点的信息 
- ListNode* reverseList(ListNode* head){
- 	ListNode *reverseHead = NULL;
+ListNode* reverseList(ListNode* head){
+	ListNode *reverseHead = NULL;
 	ListNode *pNode = head;
 	ListNode *Prev = NULL;
 	while(pNode != NULL){
@@ -256,179 +256,179 @@ vector<int> reverseArr(vector<int> arr){
 		pNode = pNext;
 	}
 	return reverseHead; 
- } 
- 
+} 
+
  //合并两个排序的链表,递归实现，每次只要选出一个就行进行大小的比较在两个链表头 
- ListNode* MergeList(ListNode* list1, ListNode* list2){
- 	ListNode *newHead = NULL;
- 	if(list1 == NULL && list2 == NULL){
-	 	return NULL;
-	 }
-	 if(list1 == NULL){
-	 	return list2;
-	 }
-	 if(list2 == NULL){
-	 	return list1;
-	 }
-	 if(list1->val > list2->val){
-	 	newHead = list2;
-	 	MergeList(list1, list2->next);
-	 }
-	 if(list1->val <= list2->val){
-	 	newHead = list1;
-	 	MergeList(list1->next, list2);
-	 }  
- 	return newHead;
- } 
- 
+ListNode* MergeList(ListNode* list1, ListNode* list2){
+	ListNode *newHead = NULL;
+	if(list1 == NULL && list2 == NULL){
+		return NULL;
+	}
+	if(list1 == NULL){
+		return list2;
+	}
+	if(list2 == NULL){
+		return list1;
+	}
+	if(list1->val > list2->val){
+		newHead = list2;
+		MergeList(list1, list2->next);
+	}
+	if(list1->val <= list2->val){
+		newHead = list1;
+		MergeList(list1->next, list2);
+	}  
+	return newHead;
+} 
+
  //树的子结构判断
-  bool DoseTree1HaveTree2(TreeNode* root1, TreeNode* root2) {
- 	if(root1 == NULL){
-	 	return false;
-	 }
-	 if(root2 == NULL){
- 		return true;
- 	}
- 	if(root1->val != root2->val){
-	 	return false;
- 	}
- 	return DoseTree1HaveTree2(root1->left, root2->left) && DoseTree1HaveTree2(root1->right, root2->right);
- }
- 
- bool IsSubTree(TreeNode* root1, TreeNode* root2){
- 	bool result = false;
- 	if(root1 == NULL || root2 == NULL){
-	 	return result;
-	 }
- 	if(root1->val == root2->val){
-	 	result = DoseTree1HaveTree2(root1, root2);
-	 }
+bool DoseTree1HaveTree2(TreeNode* root1, TreeNode* root2) {
+	if(root1 == NULL){
+		return false;
+	}
+	if(root2 == NULL){
+		return true;
+	}
+	if(root1->val != root2->val){
+		return false;
+	}
+	return DoseTree1HaveTree2(root1->left, root2->left) && DoseTree1HaveTree2(root1->right, root2->right);
+}
+
+bool IsSubTree(TreeNode* root1, TreeNode* root2){
+	bool result = false;
+	if(root1 == NULL || root2 == NULL){
+		return result;
+	}
+	if(root1->val == root2->val){
+		result = DoseTree1HaveTree2(root1, root2);
+	}
 	 //两个根节点不一样则分别遍历树1的左右子树查找子结构 
-	 if(!result){
- 		result = DoseTree1HaveTree2(root1->left, root2); 
- 	}
- 	if(!result){
- 		result = DoseTree1HaveTree2(root1->right, root2); 
- 	}
- 	return result;
- }
- 
+	if(!result){
+		result = DoseTree1HaveTree2(root1->left, root2); 
+	}
+	if(!result){
+		result = DoseTree1HaveTree2(root1->right, root2); 
+	}
+	return result;
+}
+
  //二叉树镜像，递归交换左右子树的节点就行
- void Mirro(TreeNode* pNode){
- 	if(pNode == NULL){
-	 	return;
-	 }
-	 if(pNode->left == NULL && pNode->right == NULL){
- 		return;
- 	}
- 	TreeNode *temp = pNode->left;
- 	pNode->left = pNode->right;
- 	pNode->right= temp;
- 	if(pNode->left != NULL){
-	 	Mirro(pNode->left);
-	 }
-	 if(pNode->right != NULL){
-	 	Mirro(pNode->right);
-	 }
- } 
- 
+void Mirro(TreeNode* pNode){
+	if(pNode == NULL){
+		return;
+	}
+	if(pNode->left == NULL && pNode->right == NULL){
+		return;
+	}
+	TreeNode *temp = pNode->left;
+	pNode->left = pNode->right;
+	pNode->right= temp;
+	if(pNode->left != NULL){
+		Mirro(pNode->left);
+	}
+	if(pNode->right != NULL){
+		Mirro(pNode->right);
+	}
+} 
+
  //顺时针打印矩阵
 vector<int> printMatrix(vector<vector<int> > matrix) {
 	vector<int> res;
 	if(matrix.empty()){
 		return res;
 	}
-	 int rows = matrix.size();
-	 int cols = matrix[0].size();
+	int rows = matrix.size();
+	int cols = matrix[0].size();
 	 //定义四个角标变量，因为打印一共分为四步，分别为从左到右
 	 //从上到下，从右到左，从下到上。
-	 int left = 0;
-	 int right = cols - 1;
-	 int top = 0;
-	 int bottom = rows - 1;
-        while(left <= right && top <= bottom){
+	int left = 0;
+	int right = cols - 1;
+	int top = 0;
+	int bottom = rows - 1;
+	while(left <= right && top <= bottom){
             //从左到右打印，这一步肯定有
-            for(int i = left; i <=right; i++){
-                res.push_back(matrix[top][i]);
-            }
+		for(int i = left; i <=right; i++){
+			res.push_back(matrix[top][i]);
+		}
             //从上到下打印
-            if(top < bottom){
-                for(int j = top+1; j <= bottom; j++){
-                    res.push_back(matrix[j][right]);
-                }
-            }
+		if(top < bottom){
+			for(int j = top+1; j <= bottom; j++){
+				res.push_back(matrix[j][right]);
+			}
+		}
             //从右到左打印
-            if(top < bottom && left < right){
-                for(int k = right -1; k >= left; k--){
-                    res.push_back(matrix[bottom][k]);
-                }
-            }
+		if(top < bottom && left < right){
+			for(int k = right -1; k >= left; k--){
+				res.push_back(matrix[bottom][k]);
+			}
+		}
             //从下往上打印
-            if(top+1 < bottom && left < right){
-                for(int h = bottom - 1; h >= top+1; h--){
-                    res.push_back(matrix[h][left]);
-                }
-            }
-            left++;
-            right--;
-            top++;
-            bottom--;
-        }
-        return res;
- } 
- 
- //栈的压入和弹出,即判断一个序列是否为出栈的顺序
- bool IsPopOrder(vector<int> pushS, vector<int> popS){
- 	stack<int> temp;
- 	int id = 0; //用于统计原序列是否已经全部入栈 
- 	for(int i = 0; i < popS.size(); ++i){
-	 	while(temp.empty() || temp.top() != popS[i]){
-	 		temp.push(pushS[id++]);
-	 		//当原序列全部入栈后还没有找到与当前值相等的则说明不是出栈顺序 
-	 		if(id > pushS.size()){
-		 		return false;
-		 	}
-	 	}
-	 	temp.pop();
-	 }
-	 if(temp.empty()){
- 		return true;
- 	}
- 	else{
-	 	return false;
-	 }
- } 
-
-// 从上往下打印二叉树，同层从左到右
-vector<int> PrintBST(TreeNode* root){
-	vector<int> res;
-	if(root == NULL){
-		return res;
-	}
-	queue<TreeNode*> temp;
-	temp.push(root);
-	while(!temp.empty()){
-		TreeNode *tempNode = temp.front();
-		res.push_back(tempNode->val);
-		if(tempNode->left != NULL){
-			temp.push(tempNode->left);
+		if(top+1 < bottom && left < right){
+			for(int h = bottom - 1; h >= top+1; h--){
+				res.push_back(matrix[h][left]);
+			}
 		}
-		if(tempNode->right != NULL){
-			temp.push(tempNode->right);
-		}
-		temp.pop();  
+		left++;
+		right--;
+		top++;
+		bottom--;
 	}
 	return res;
 } 
 
+ //栈的压入和弹出,即判断一个序列是否为出栈的顺序
+bool IsPopOrder(vector<int> pushS, vector<int> popS){
+	stack<int> temp;
+ 	int id = 0; //用于统计原序列是否已经全部入栈 
+ 	for(int i = 0; i < popS.size(); ++i){
+ 		while(temp.empty() || temp.top() != popS[i]){
+ 			temp.push(pushS[id++]);
+	 		//当原序列全部入栈后还没有找到与当前值相等的则说明不是出栈顺序 
+ 			if(id > pushS.size()){
+ 				return false;
+ 			}
+ 		}
+ 		temp.pop();
+ 	}
+ 	if(temp.empty()){
+ 		return true;
+ 	}
+ 	else{
+ 		return false;
+ 	}
+ } 
+
+// 从上往下打印二叉树，同层从左到右
+ vector<int> PrintBST(TreeNode* root){
+ 	vector<int> res;
+ 	if(root == NULL){
+ 		return res;
+ 	}
+ 	queue<TreeNode*> temp;
+ 	temp.push(root);
+ 	while(!temp.empty()){
+ 		TreeNode *tempNode = temp.front();
+ 		res.push_back(tempNode->val);
+ 		if(tempNode->left != NULL){
+ 			temp.push(tempNode->left);
+ 		}
+ 		if(tempNode->right != NULL){
+ 			temp.push(tempNode->right);
+ 		}
+ 		temp.pop();  
+ 	}
+ 	return res;
+ } 
+
 //判断一个数组是否为某一个二叉搜索树的后序遍历
 //后序遍历根节点为最后一个，并且比根节点大的为左子树，反之为右子树
 //递归直到左右都遍历完
-bool ArrayIsHouXu(vector<int> arr){
-	int len = arr.size();
-	if(len <=0 ){
-		return false;
-	}
+ bool ArrayIsHouXu(vector<int> arr){
+ 	int len = arr.size();
+ 	if(len <=0 ){
+ 		return false;
+ 	}
 	int root = arr[len-1];//最后一个为树的根节点
 	vector<int> leftNode;
 	vector<int> rightNode;
@@ -455,7 +455,7 @@ bool ArrayIsHouXu(vector<int> arr){
 		right = ArrayIsHouXu(rightNode);
 	} 
 	return left && right;
-	 
+
 }
 
 // 查找二叉树中和为某一值的所有路径，可以递归每次查找的值为目标值减去当前的根节点值
@@ -515,12 +515,12 @@ RandomListNode *ChaiFen(RandomListNode* head){
 	RandomListNode *result = head->next;
 	while (pNode != NULL){
 		RandomListNode *pClone = pNode->next;
-	 	pNode->next = pClone->next;
-	 	pNode = pNode->next;
-	 	if (pNode != NULL)
-	 		pClone->next = pNode->next;
+		pNode->next = pClone->next;
+		pNode = pNode->next;
+		if (pNode != NULL)
+			pClone->next = pNode->next;
 	}
- 	return result;
+	return result;
 }
 
 RandomListNode* Clone(RandomListNode* pHead){
@@ -528,8 +528,8 @@ RandomListNode* Clone(RandomListNode* pHead){
 	copyListNode(pHead);
 	linkRandomList(pHead);
 	return ChaiFen(pHead);
- }
- 
+}
+
 //字符串的排列
 void Permutation(string str, vector<string> & res, int begin){
 	int len = str.size();
@@ -537,7 +537,7 @@ void Permutation(string str, vector<string> & res, int begin){
 		res.push_back(str);
 		return;
 	}
-	          
+
 	for(int i = begin; i < len; i++){
 		//一样的两个数字不需要交换
 		if( i!=begin && str[i] == str[begin])
@@ -592,9 +592,9 @@ int MoreThanHalfNum(vector<int> arr){
 } 
 
 //最小的K个数,通过维护一个K大顶堆即可 ,若果找K大则维护一个K小顶堆即可 
- vector<int> Get_K_MinNum(vector<int> arr, int k){
- 	priority_queue<int> maxHeap;
- 	vector<int> res;
+vector<int> Get_K_MinNum(vector<int> arr, int k){
+	priority_queue<int> maxHeap;
+	vector<int> res;
 	int len = arr.size();
 	if(len == 0 || k <=0){
 		return res;
@@ -619,108 +619,108 @@ int MoreThanHalfNum(vector<int> arr){
 	}
 	
 	return res;
-	  
- }
- 
+
+}
+
  //连续子数组的最大和
- int FindGreatestSumOfSubArray(vector<int> arr){
- 	int len = arr.size();
-	 if(len == 0){
- 		return 0;
- 	}
- 	int maxSum = 0;
- 	int currentSum = 0;
- 	for(int i = 0; i < len; i++){
+int FindGreatestSumOfSubArray(vector<int> arr){
+	int len = arr.size();
+	if(len == 0){
+		return 0;
+	}
+	int maxSum = 0;
+	int currentSum = 0;
+	for(int i = 0; i < len; i++){
  		//当加上的值小于等于0时说明连续子和中断因为任何一个数加上一个非正数都会
 		//使其值变小。 
-	 	if(currentSum <=0 ){
-	 		currentSum = arr[i];
-	 	}
-	 	else{
-	 		currentSum += arr[i];
-	 	}
-	 	if(currentSum > maxSum){
-	 		maxSum = currentSum;
-	 	}
-	 }
-	 return maxSum;
- } 
- 
+		if(currentSum <=0 ){
+			currentSum = arr[i];
+		}
+		else{
+			currentSum += arr[i];
+		}
+		if(currentSum > maxSum){
+			maxSum = currentSum;
+		}
+	}
+	return maxSum;
+} 
+
  // 一个整数中1出现的次数
- int NumberOf1Count(int number){
- 	int count = 0;
- 	while(number){
-	 	count++;
-	 	number = number & (number - 1);
-	 }
-	 return count;
- }
- 
+int NumberOf1Count(int number){
+	int count = 0;
+	while(number){
+		count++;
+		number = number & (number - 1);
+	}
+	return count;
+}
+
  //把数组排成最小的数
  //对数据先排序若a+b < b+a则a在前，b在后，然后对排序后的数组进行拼接就行 
- bool compare(int a, int b){
- 	string first = to_string(a) + to_string(b);
- 	string second = to_string(b) + to_string(a);
- 	return first < second;
- }
- string PrintMinNumber(vector<int> arr){
- 	int len = arr.size();
- 	string result;
- 	if(len == 0){
-	 	return NULL;
-	 }
-	 sort(arr.begin(), arr.end(), compare);
-	 for(int i = 0; i < len; i++){
- 		result += to_string(arr[i]);
- 	}
- 	return result;
- }
- 
- //丑数
- int GetUglyNumber_Solution(int index) {
-	 if(index <= 0){
-	 	return 0;
-	 }
-	 int factors[] ={2,3,5};
-	 int uglyNumbers[index];
-	 uglyNumbers[0] = 1;
-	 //记录使用的次数这样就不会出现重复的丑数
-	 int num2 = 0, num3 = 0 , num5 = 0;
-	 for(int i = 1; i < index; i++){
-	 	uglyNumbers[i] = min(uglyNumbers[num2] * factors[0], min(uglyNumbers[num3] * factors[1], uglyNumbers[num5] * factors[2]));
-	 	if(uglyNumbers[i] == uglyNumbers[num2]*factors[0])num2++;
-	 	if(uglyNumbers[i] == uglyNumbers[num3]*factors[1])num3++;
-	 	if(uglyNumbers[i] == uglyNumbers[num5]*factors[2])num5++;
-	 }
- 	return uglyNumbers[index-1];
- }
- 
- //第一个只出现一次的字符
- char firstAppearCharOnLyOnce(string s){
- 	int len = s.length();
- 	if(s == " " || len == 0){
-	 	return ' ';
- 	}
-	int result[256] = {0};
- 	for(int i = 0; i < len; i++){
- 		result[s[i]]++;
- 	}
- 	for(int j = 0; j < len; j++){
- 		//cout << result[s[j]] << endl;
-	 	if(result[s[j]] == 1){
-	 		return s[j];
-	 	}
- 	}
- 	return ' ';
+bool compare(int a, int b){
+	string first = to_string(a) + to_string(b);
+	string second = to_string(b) + to_string(a);
+	return first < second;
 }
- 
- //数组中的逆序对
- int reverseNum(vector<int> arr){
- 	int len = arr.size();
- 	if(len == 0 || len == 1){
-	 	return 0;
+string PrintMinNumber(vector<int> arr){
+	int len = arr.size();
+	string result;
+	if(len == 0){
+		return NULL;
 	}
-	 
+	sort(arr.begin(), arr.end(), compare);
+	for(int i = 0; i < len; i++){
+		result += to_string(arr[i]);
+	}
+	return result;
+}
+
+ //丑数
+int GetUglyNumber_Solution(int index) {
+	if(index <= 0){
+		return 0;
+	}
+	int factors[] ={2,3,5};
+	int uglyNumbers[index];
+	uglyNumbers[0] = 1;
+	 //记录使用的次数这样就不会出现重复的丑数
+	int num2 = 0, num3 = 0 , num5 = 0;
+	for(int i = 1; i < index; i++){
+		uglyNumbers[i] = min(uglyNumbers[num2] * factors[0], min(uglyNumbers[num3] * factors[1], uglyNumbers[num5] * factors[2]));
+		if(uglyNumbers[i] == uglyNumbers[num2]*factors[0])num2++;
+		if(uglyNumbers[i] == uglyNumbers[num3]*factors[1])num3++;
+		if(uglyNumbers[i] == uglyNumbers[num5]*factors[2])num5++;
+	}
+	return uglyNumbers[index-1];
+}
+
+ //第一个只出现一次的字符
+char firstAppearCharOnLyOnce(string s){
+	int len = s.length();
+	if(s == " " || len == 0){
+		return ' ';
+	}
+	int result[256] = {0};
+	for(int i = 0; i < len; i++){
+		result[s[i]]++;
+	}
+	for(int j = 0; j < len; j++){
+ 		//cout << result[s[j]] << endl;
+		if(result[s[j]] == 1){
+			return s[j];
+		}
+	}
+	return ' ';
+}
+
+ //数组中的逆序对
+int reverseNum(vector<int> arr){
+	int len = arr.size();
+	if(len == 0 || len == 1){
+		return 0;
+	}
+
 } 
 
 //两个链表的第一个公共节点
@@ -735,7 +735,7 @@ int listLength(ListNode * head){
 	}
 	return count;
 }
-    
+
 ListNode* FindFirstCommonNode( ListNode* pHead1, ListNode* pHead2) {
 	int len1 = listLength(pHead1);
 	int len2 = listLength(pHead2);
@@ -826,7 +826,7 @@ void FindTwoAppearOnce(vector<int> arr){
 	}
 	cout << num1 << " " << num2 << endl; 	
 } 
- 
+
 //和为S的连续正数序列  
 vector<vector<int> > FindContinuousSequence(int sum) {
 	int small =1, big = 2;
@@ -1097,12 +1097,12 @@ ListNode* DeleteDuplication(ListNode* pHead){
 		// 新建一个头节点，防止第一个结点被删除
 		ListNode* newHead = new ListNode(-1);
 		newHead->next = pHead;
-		         
+
 		// 建立索引指针
 		ListNode* p = pHead;      // 当前节点
 		ListNode* pre = newHead;  // 当前节点的前序节点
 		ListNode* next = p->next;    // 当前节点的后序节点
-	
+
 		// 从头到尾遍历编标
 		while(p != NULL && p->next != NULL)
 		{
@@ -1128,7 +1128,7 @@ ListNode* DeleteDuplication(ListNode* pHead){
 			next = p->next; //这句两个条件内都有则提到外面公用。 
 		}
 	return newHead->next;//返回头结点的下一个节点
-	}
+}
 }
 
 //二叉树的下一个节点
@@ -1268,7 +1268,7 @@ double FindKthNum(int a[],int len1, int b[], int len2, int k){
 	
 	if(a[k1-1] < b[k2-1])
 		return FindKthNum(a+k1, len1-k1, b, len2, k-k1); //数组指针加上一个偏移量表示指到对应下标位置 
-		
+
 	else if(a[k1-1] > b[k2-1])
 		return FindKthNum(a, len1, b+k2,len2-k2, k-k2);  
 	
@@ -1289,10 +1289,10 @@ vector<int> maxInWindowOfK(vector<int> arr, int k){
 			deq.pop_front();
 		//移除当前队列里小于当前值的数，因为进来一个大的后小的不可能不出现在窗口最大值中 
 		while(!deq.empty() && arr[i] >= arr[deq.back()]) 
-	 		deq.pop_back();
-	 	deq.push_back(i);
+			deq.pop_back();
+		deq.push_back(i);
 	 	// 滑动窗口经过K个元素，获取当前的最大值，也就是队列的头元素
-	 	if(i >= k - 1) 
+		if(i >= k - 1) 
 			res.push_back(arr[deq.front()]);   	
 	}
 	return res;	
@@ -1309,9 +1309,9 @@ bool Path(char* matrix, vector<int>right ,int i, int j, char* str){
 		if(*(str+1) == 0)
 			return true;
 		bool flag = Path(matrix,right,i,j+1,str+1)||
-					Path(matrix,right,i+1,j,str+1)||
-					Path(matrix,right,i-1,j,str+1)||
-					Path(matrix,right,i,j-1,str+1);
+		Path(matrix,right,i+1,j,str+1)||
+		Path(matrix,right,i-1,j,str+1)||
+		Path(matrix,right,i,j-1,str+1);
 		if(!flag)
 			right[i*col+j] = 0;
 		return flag;
@@ -1319,7 +1319,7 @@ bool Path(char* matrix, vector<int>right ,int i, int j, char* str){
 	else
 		return false;
 }
- 
+
 bool hasPath(char* matrix, int rows, int cols, char* str){
 	row = rows;
 	col = cols;
@@ -1328,33 +1328,33 @@ bool hasPath(char* matrix, int rows, int cols, char* str){
 	for(int i = 0; i < rows; i++)
 		for(int j = 0 ; j < cols; j++)
 			flag = (flag || Path(matrix,right,i,j,str));
-	
-	return flag;
-}
+
+		return flag;
+	}
 
 //机器人的运动范围
- 
-int main(){
-	int arr1[4] = {1,2,3,4};
-	int arr2[4] = {5,6,7,8};
-	cout << FindKthNum(arr1,4,arr2,4,6) << endl;
-	
+
+	int main(){
+		int arr1[4] = {1,2,3,4};
+		int arr2[4] = {5,6,7,8};
+		cout << FindKthNum(arr1,4,arr2,4,6) << endl;
+
 	//cout << Power(0,1) << " " << Power(2.0,3) << " " << Power(2.0,-3) << endl;
-	int n,k;
-	vector<int> vec;
-	while(cin >> n >> k){
-		int temp;
-		for(int i = 0; i< n; i++){
-			cin >> temp;
-			vec.push_back(temp);
-		}
+		int n,k;
+		vector<int> vec;
+		while(cin >> n >> k){
+			int temp;
+			for(int i = 0; i< n; i++){
+				cin >> temp;
+				vec.push_back(temp);
+			}
 		//vector<int> result = reverseArr(vec);
-		vector<int> result = maxInWindowOfK(vec,k);
-		auto it = result.begin();
-		for(; it != result.end(); it++){
-			cout << *it <<endl;
+			vector<int> result = maxInWindowOfK(vec,k);
+			auto it = result.begin();
+			for(; it != result.end(); it++){
+				cout << *it <<endl;
+			}
 		}
-	}
 	//vector<int> vec1 = {1,2,3,0,5};
 	//cout << IsConnection(vec1) << endl;
 	//cout << LastRemind(5,3) << endl;
@@ -1365,7 +1365,7 @@ int main(){
 	//cout << IsNumber(str) << endl;
 	//vector<int> vec2 = {4,5,3,2,1};
 	//cout << IsPopOrder(vec1, vec2) << endl;
-	
+
 	//string str = "abc";
 	//vector<string> result = Permutation(str);
 	//auto item = result.begin();
@@ -1404,7 +1404,7 @@ int main(){
 		//cout <<GetUglyNumber_Solution(n) << endl;
 		//cout << firstAppearCharOnLyOnce(s) << endl;
 	//}
-	
+
 	/**string str;
 	int n;
 	while(cin >> str){
@@ -1412,6 +1412,6 @@ int main(){
 		reverseStringOfWord(str);
 		//cout << reverseStringOfWord(str)<< " "; 
 	}**/
-	
-	return 0;
-}
+
+		return 0;
+	}
