@@ -101,10 +101,26 @@ if __name__ == '__main__':
 
     word = input("请输入你要下载的图片关键词：\n")
     word = str(word)
-    dirpath = mkDir("results")
+    dirpath = mkDir("downloads\\" + word)
+
+    imgTypeNum = input("请输入要下载的图片的类型：\n default: jpg \n 1: jpg \n 2: png \n 3: gif\n")
+    imgTypeNum = int(imgTypeNum)
+
+    if(imgTypeNum == 1):
+        imgType = 'jpg'
+    elif(imgTypeNum == 2):
+        imgType = 'png'
+    elif(imgTypeNum == 3):
+        imgType = 'gif'
+    else:
+        imgType = 'jpg'
+
+    imgNums = input("请输入要下载图片的数量：\n")
+    imgNums = int(imgNums)
 
     urls = buildUrls(word)
     index = 0
+
     for url in urls:
         print("正在请求：", url)
         html = requests.get(url, timeout=10).content.decode('utf-8')
@@ -112,6 +128,14 @@ if __name__ == '__main__':
         if len(imgUrls) == 0:  # 没有图片则结束
             break
         for url in imgUrls:
-            if downImg(url, dirpath, str(index) + ".jpg"):
+            if downImg(url, dirpath, str(index) + "." + imgType):
                 index += 1
                 print("已下载 %s 张" % index)
+
+            if(imgNums == index):
+                print("已经下载完成！")
+                break;
+        if(imgNums == index):
+                print("已经下载完成，一共下载了 %s 张 %s 图！" % (index, word))
+                break;
+
